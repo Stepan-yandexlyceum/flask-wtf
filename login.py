@@ -1,7 +1,7 @@
 from flask_login import LoginManager, login_user
 from flask import Flask, render_template, redirect
+from main import LoginForm
 from user import User
-from Loginform import LoginForm
 import db_session
 
 app = Flask(__name__)
