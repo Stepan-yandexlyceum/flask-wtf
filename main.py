@@ -6,7 +6,10 @@ from wtforms import PasswordField, StringField, TextAreaField, SubmitField, Bool
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired
 import db_session
+from job_form import JobForm
+from jobs import Jobs
 from user import User
+import jobs_api
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -315,6 +318,27 @@ def login():
                                form=form)
     return render_template('login.html', title='Авторизация', form=form)
 
+@app.route('/add_job', methods=['GET', 'POST'])
+def add_job():
+    form = JobForm()
+    if form.validate_on_submit():
+        db_session.global_init('db/blogs.db')
+        db_sess = db_session.create_session()
+        job = Jobs()
+        job.job = form.title.data
+        job.team_leader = int(form.tl_id.data)
+        job.work_size = int(form.work_size.data)
+        job.collaborators = form.collaborators.data
+        job.is_finished = form.finished.data
+        db_sess.add(job)
+        db_sess.commit()
+        return redirect("/tab1")
+    return render_template('job.html', title='Add a job', form=form)
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
+
+def main():
+    db_session.global_init("db/blogs.db")
+    app.register_blueprint(jobs_api.blueprint)
+    app.run()
