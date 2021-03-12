@@ -267,7 +267,7 @@ def results(nickname, level, rating):
 def carousel():
     styles = url_for('static', filename='css/style.css')
     bootstrap = url_for('static', filename='css/bootstrap.min.css')
-    return f'''app.run(port=8080, host='127.0.0.1')
+    return f'''
                     <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                       <div class="carousel-inner">
                         <div class="carousel-item active">
@@ -318,6 +318,7 @@ def login():
                                form=form)
     return render_template('login.html', title='Авторизация', form=form)
 
+
 @app.route('/add_job', methods=['GET', 'POST'])
 def add_job():
     form = JobForm()
@@ -335,8 +336,30 @@ def add_job():
         return redirect("/tab1")
     return render_template('job.html', title='Add a job', form=form)
 
+
+@app.route('/list/<str:arg>')
+def list(arg):
+    profs = ['Engineer', 'Pilot', 'Builder', 'Biologist', 'Doc',
+             'Drone Driver', 'Cyber Engineer']
+    return render_template('base.html', type=arg, profs=profs)
+
+
+@app.route('/training/<prof>')
+def training(prof):
+    return render_template('index.html', prof=prof)
+
+
+@app.route('/answer')
+@app.route('/auto_answer')
+def auto_answer():
+    param = {'title': 'Анкета', 'surname': 'Имя', 'name': 'Фамилия', 'education': '9 классов',
+             'profession': 'нет', 'sex': 'м', 'motivation': 'нет', 'ready': True}
+    return render_template('auto_answer.html', **param)
+
+
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
+
 
 def main():
     db_session.global_init("db/blogs.db")
